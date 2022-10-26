@@ -7,48 +7,48 @@ class Tooltip {
     if (Tooltip.instance) return Tooltip.instance
 
     Tooltip.instance = this;
-  }
 
-  initialize() {
-    this.initEventListeners();
-  }
 
-  initEventListeners() {
-    document.addEventListener('pointerover', this.onPointerOver);
-    document.addEventListener('pointerout', this.onPointerOut);
-  }
-
-  onPointerOver = event => {
-    const element = event.target.closest('[data-tooltip]');
-
-    if (element) {
-      this.render(element.dataset.tooltip);
-      document.addEventListener('pointermove', this.onPointerMove);
-    }
-  }
-
-  onPointerOut = () => {
-    this.remove();
-    document.removeEventListener('pointermove', this.onPointerMove);
-  }
-
-  onPointerMove = event => {
-    this.moveTooltip(event);
-  }
-
-  moveTooltip(event) {
-    const shift = 10,
-    left = event.clientX + shift,
-    top = event.clinetY + shift;
-    this.element.style.left = `${left}px`;
-    this.element.style.top = `${top}px`;
   }
 
   render(text) {
-    this.element = document.createElement('div');
-    this.element.className = 'tooltip';
-    this.element.innerHTML = text;
-    document.body.append(this.element);
+    this.element = document.createElement('div')
+
+    this.element.classList.add('tooltip')
+
+    this.element.innerHTML = text
+
+    document.body.append(this.element)
+
+  }
+
+  initialize() {
+    document.addEventListener('pointerover', this.onPointerOver)
+    document.addEventListener('pointerout', this.onPointerOut)
+  }
+
+  onPointerOver = event => { 
+    const element = event.target.closest('[data-tooltip]')
+
+    if (element ) {
+      this.render(element.dataset.tooltip)
+    document.addEventListener('pointermove', this.onPointerMove)
+  }
+  }
+
+  onPointerMove = event => {
+    const shift = 15
+    const left = event.clientX + shift
+    const top = event.clientY + shift
+
+    this.element.style.left = `${left}px`
+    this.element.style.top = `${top}px`
+    
+  }
+
+  onPointerOut = event => {
+    document.removeEventListener('pointermove', this.onPointerMove)
+      this.remove()
   }
 
   remove() {

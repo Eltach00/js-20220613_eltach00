@@ -8,7 +8,7 @@
 <div id="root"></div>
 
 <script type="module">
-  import SortableTable from './index.js';
+  import SortableTable from './index2.js';
 
   const header = [
     {
@@ -57,6 +57,10 @@
   const sortableTable = new SortableTable(header, {
     url: 'api/rest/products'
   });
+
+  window.sort = new SortableTable(header, {
+    url: 'api/rest/products'
+  })
 
   root.append(sortableTable.element);
 </script>

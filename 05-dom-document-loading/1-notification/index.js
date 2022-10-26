@@ -1,65 +1,49 @@
 export default class NotificationMessage {
+  static NotificationActive
+  element
 
-    static activeNot;
+  constructor( message, { duration, type = ''} = {}) {
+    this.message = message
+    this.duration = duration
+    this.type = type
+    this.render()
+  }
 
-    timerId;
+  render() {
+    const div = document.createElement('div')
 
-    constructor( message = '', {
-        duration = 0,
-        type = ''
-    } = {} ) {
+    div.innerHTML = this.getTemplate()
 
-        if (NotificationMessage.activeNot) NotificationMessage.activeNot.remove();
-        
-        this.message = message;
-        this.duration = duration;
-        this.type = type;
-        
-        this.render();
+    this.element = div.firstElementChild
+  }
+
+  getTemplate() {
+    return `  <div class="notification success" style="--value:${this.duration}ms">
+    <div class="timer"></div>
+    <div class="inner-wrapper">
+      <div class="notification-header">${this.type}</div>
+      <div class="notification-body">
+        ${this.message}
+      </div>
+    </div>
+  </div>`
+  }
+
+  show(parent = document.body) {
+    if (NotificationMessage.NotificationActive) {
+      NotificationMessage.NotificationActive.remove()
+    } 
+    parent.append(this.element)
+    setTimeout(() => {
+      this.remove()
+    }, this.duration);
+
+    NotificationMessage.NotificationActive = this
+  }
+   
+  remove() {
+    if (this.element) {
+      this.element.remove()
     }
-
-    getTemplate() {
-        return  `<div class="notification ${this.type}" style="--value: ${(this.duration/ 1000) + 's'}">
-        <div class="timer"></div>
-        <div class="inner-wrapper">
-          <div class="notification-header">Notification: success!</div>
-          <div class="notification-body">
-            ${this.message}
-          </div>
-        </div>
-      </div>`
-    }
-
-    render() {
-        const element = document.createElement('div');
-
-        element.innerHTML = this.getTemplate();
-
-        this.element = element.firstElementChild;
-    }
-
-
-    show(parent = document.body) {
-
-        parent.append(this.element);
-
-        this.timerId = setTimeout(() => {
-            this.remove();
-          }, this.duration);
-
-        NotificationMessage.activeNot = this;
-    }
-
-
-
-    remove() {
-        clearTimeout(this.timerId);
-        if (this.element) this.element.remove();
-      }
-    
-    destroy() {
-        this.remove();
-        this.element = null;
-        NotificationMessage.activeNot = null;
-      }
+  }
 }
